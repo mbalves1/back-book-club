@@ -9,7 +9,7 @@ export class BookService {
   }
 
   findAll() {
-    return `This action returns all book`;
+    return `dragons, aqui`;
   }
 
   findOne(id: number) {
