@@ -1,6 +1,12 @@
 import { BookEntity } from '@app/book/entities/book.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-// import { hash } from 'bcrypt';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { hash } from 'bcrypt';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -14,10 +20,18 @@ export class UserEntity {
   username: string;
 
   @Column({ default: '' })
+  bio: string;
+
+  @Column({ default: '' })
   image: string;
 
   @Column({ select: false })
   password: string;
+
+  @BeforeInsert()
+  async hasPassord() {
+    this.password = await hash(this.password, 10);
+  }
 
   @OneToMany(() => BookEntity, (book) => book.admingroup)
   groups: BookEntity[];
