@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JWT_SECRET } from '@app/config';
 import { sign } from 'jsonwebtoken';
 import { UserResponseInterface } from './types/userResponse.interface';
+import { LoginUserDto } from './dto/login-user.dto';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -20,9 +22,14 @@ export class UserService {
         email: createUserDto.email,
       },
     });
-    if (userByEmail) {
+    const userByUsername = await this.userRepository.findOne({
+      where: {
+        username: createUserDto.username,
+      },
+    });
+    if (userByEmail || userByUsername) {
       throw new HttpException(
-        'Email is already in use',
+        'Email or name is already in use',
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
@@ -49,5 +56,32 @@ export class UserService {
         token: this.generateJwt(user),
       },
     };
+  }
+
+  async doLogin(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: loginUserDto.email,
+      },
+      select: ['id', 'username', 'email', 'bio', 'image', 'password'],
+    });
+
+    if (!user) {
+      throw new HttpException(
+        'Email or password is invalid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const passwordValid = await compare(loginUserDto.password, user.password);
+
+    if (!passwordValid) {
+      throw new HttpException(
+        'Credentials is invalid, try again!',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    delete user.password;
+    return user;
   }
 }
