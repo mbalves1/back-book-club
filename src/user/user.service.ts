@@ -4,6 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JWT_SECRET } from '@app/config';
+import { sign } from 'jsonwebtoken';
+import { UserResponseInterface } from './types/userResponse.interface';
 
 @Injectable()
 export class UserService {
@@ -28,19 +31,23 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  generateJwt(user: UserEntity): string {
+    return sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+      JWT_SECRET,
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  buildUserResponse(user: UserEntity): UserResponseInterface {
+    return {
+      user: {
+        ...user,
+        token: this.generateJwt(user),
+      },
+    };
   }
 }

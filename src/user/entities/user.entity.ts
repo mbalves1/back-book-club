@@ -29,10 +29,10 @@ export class UserEntity {
   password: string;
 
   @BeforeInsert()
-  async hasPassord() {
+  async hasPassword() {
     this.password = await hash(this.password, 10);
   }
 
-  @OneToMany(() => BookEntity, (book) => book.admingroup)
-  groups: BookEntity[];
+  // @OneToMany(() => BookEntity, (book) => book.admingroup)
+  // groups: BookEntity[];
 }
