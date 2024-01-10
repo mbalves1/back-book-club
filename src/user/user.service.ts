@@ -92,4 +92,21 @@ export class UserService {
     delete user.password;
     return user;
   }
+
+  async finById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const userId = await this.finById(id);
+    Object.assign(userId, updateUserDto);
+    return await this.userRepository.save(userId);
+  }
 }
