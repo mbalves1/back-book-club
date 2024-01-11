@@ -3,6 +3,8 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -33,6 +35,10 @@ export class UserEntity {
     this.password = await hash(this.password, 10);
   }
 
-  // @OneToMany(() => BookEntity, (book) => book.admingroup)
-  // groups: BookEntity[];
+  @OneToMany(() => BookEntity, (book) => book.admingroup)
+  books: BookEntity[];
+
+  @ManyToMany(() => BookEntity)
+  @JoinTable()
+  favorites: BookEntity[];
 }
