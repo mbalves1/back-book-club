@@ -3,6 +3,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentEntity } from './entities/comment.entity';
 import { CommentResponseInterface } from './types/commentResponse.interface';
+import { CommentsResponseInterface } from './types/commentsResponse.interface';
 import { UserEntity } from '@app/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -43,8 +44,12 @@ export class CommentService {
     return await this.commentRepository.save(newComment);
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findAll(): Promise<CommentsResponseInterface> {
+    const comment = await this.commentRepository.find({
+      relations: ['user', 'book'],
+    });
+    console.log('comment', comment);
+    return { comment };
   }
 
   findOne(id: number) {

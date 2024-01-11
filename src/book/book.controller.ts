@@ -17,8 +17,6 @@ import { UserEntity } from '@app/user/entities/user.entity';
 import { AuthGuard } from '@app/user/guards/auth.guard';
 import { BookResponseInterface } from './types/bookResponse.interface';
 import { BooksResponseInterface } from './types/booksResponse.interface';
-import { UserResponseInterface } from '@app/user/types/userResponse.interface';
-import { BookEntity } from './entities/book.entity';
 
 @Controller('books')
 export class BookController {

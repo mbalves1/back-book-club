@@ -13,6 +13,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { AuthGuard } from '@app/user/guards/auth.guard';
 import { CommentResponseInterface } from './types/commentResponse.interface';
+import { CommentsResponseInterface } from './types/commentsResponse.interface';
 import { User } from '@app/user/decorators/user.decorator';
 import { UserEntity } from '@app/user/entities/user.entity';
 
@@ -36,8 +37,9 @@ export class CommentController {
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
+  @UseGuards(AuthGuard)
+  async findAll(): Promise<CommentsResponseInterface> {
+    return await this.commentService.findAll();
   }
 
   @Get(':id')
