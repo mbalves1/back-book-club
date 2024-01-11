@@ -31,7 +31,7 @@ export class BookController {
     @Body('books') createBookDto: CreateBookDto,
   ): Promise<BookResponseInterface> {
     const book = await this.bookService.createBook(currentUser, createBookDto);
-    return await this.bookService.buildArticleResponse(book);
+    return await this.bookService.buildBookResponse(book);
   }
 
   @Get('feed')
@@ -40,6 +40,15 @@ export class BookController {
     @Query() query: any,
   ): Promise<BooksResponseInterface> {
     return await this.bookService.findAll(currentUserId, query);
+  }
+
+  @Get(':slug')
+  @UseGuards(AuthGuard)
+  async findBySlug(
+    @Param('slug') slug: string,
+  ): Promise<BookResponseInterface> {
+    const book = await this.bookService.findBySlug(slug);
+    return this.bookService.buildBookResponse(book);
   }
 
   @Delete(':id')

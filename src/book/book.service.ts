@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { BookResponseInterface } from './types/bookResponse.interface';
 import { BooksResponseInterface } from './types/booksResponse.interface';
 import { UserEntity } from '@app/user/entities/user.entity';
+import slugify from 'slugify';
 
 @Injectable()
 export class BookService {
@@ -18,8 +19,22 @@ export class BookService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  buildArticleResponse(book: BookEntity): BookResponseInterface {
+  private getSlug(title: string): string {
+    return (
+      slugify(title, { lower: true }) +
+      '-' +
+      ((Math.random() * Math.pow(36, 6)) | 0).toString(36)
+    );
+  }
+
+  buildBookResponse(book: BookEntity): BookResponseInterface {
     return { book };
+  }
+
+  async findBySlug(slug: string): Promise<BookEntity> {
+    return await this.bookRepository.findOne({
+      where: { slug },
+    });
   }
 
   async createBook(
@@ -28,8 +43,10 @@ export class BookService {
   ): Promise<BookEntity> {
     const book = new BookEntity();
     Object.assign(book, createBookDto);
+
+    book.slug = await this.getSlug(createBookDto.title);
     book.admingroup = currentUser;
-    console.log('bokk', book);
+
     return await this.bookRepository.save(book);
   }
 
