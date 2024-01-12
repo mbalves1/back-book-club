@@ -40,15 +40,17 @@ export class CommentService {
 
     newComment.user = currentUser;
     newComment.book = book;
+    const response = await this.commentRepository.save(newComment);
 
-    return await this.commentRepository.save(newComment);
+    console.log('>>', book);
+    return response;
   }
 
   async findAll(): Promise<CommentsResponseInterface> {
     const comment = await this.commentRepository.find({
       relations: ['user', 'book'],
     });
-    console.log('comment', comment);
+
     return { comment };
   }
 

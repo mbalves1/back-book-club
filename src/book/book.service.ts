@@ -34,6 +34,7 @@ export class BookService {
   async findBySlug(slug: string): Promise<BookEntity> {
     return await this.bookRepository.findOne({
       where: { slug },
+      relations: ['comments', 'comments.user'],
     });
   }
 
@@ -73,6 +74,7 @@ export class BookService {
         where: {
           title: query.title,
         },
+        relations: ['comments'],
       });
       queryBuilder.andWhere('books.title = :title', {
         title: titleBook.title,
@@ -80,11 +82,14 @@ export class BookService {
       console.log('tit>>>le', titleBook.title);
     }
 
-    const books = await queryBuilder.getMany();
+    const books = await queryBuilder
+      .leftJoinAndSelect('books.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'user')
+      .getMany();
 
     const count = await this.bookRepository.count();
     return {
-      books,
+      books: books,
       booksCount: count,
     };
   }
