@@ -26,6 +26,9 @@ export class BookEntity {
   @Column()
   author: string;
 
+  @Column()
+  bookcover: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

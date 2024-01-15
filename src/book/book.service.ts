@@ -119,7 +119,7 @@ export class BookService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    this.bookRepository.delete(id);
+    return this.bookRepository.delete(id);
   }
 
   // findOne(id: number) {
