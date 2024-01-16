@@ -42,11 +42,7 @@ export class UserController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async currentUser(
-    @Req() request: ExpressRequest,
-    @User() user: UserEntity,
-  ): Promise<UserResponseInterface> {
-    console.log('user', user);
+  async currentUser(@User() user: UserEntity): Promise<UserResponseInterface> {
     return this.userService.buildUserResponse(user);
   }
 

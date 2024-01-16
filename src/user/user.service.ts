@@ -109,4 +109,12 @@ export class UserService {
     Object.assign(userId, updateUserDto);
     return await this.userRepository.save(userId);
   }
+
+  async currentUser(req: any): Promise<UserEntity> {
+    return await this.userRepository.findOne({
+      where: {
+        id: req.user.id,
+      },
+    });
+  }
 }
