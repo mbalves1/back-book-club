@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import ormconfig from './ormconfig';
 import { AuthMiddleware } from './user/middlewares/auth.middleware';
 import { CommentModule } from './comment/comment.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CommentModule } from './comment/comment.module';
     BookModule,
     UserModule,
     CommentModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
